@@ -13,8 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Update pip
-        run: python3 -m pip install --upgrade pip
+      - name: Update pip and install pytest
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install pytest
 
       - name: Install
         run: python3 -m pip install .
