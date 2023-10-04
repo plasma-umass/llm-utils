@@ -1,3 +1,5 @@
+import textwrap
+
 import tiktoken
 
 # OpenAI specific.
