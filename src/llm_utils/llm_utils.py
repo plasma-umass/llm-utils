@@ -11,52 +11,42 @@ def count_tokens(model: str, string: str) -> int:
 
 
 # OpenAI specific.
-def calculate_cost(
-    num_input_tokens: int, num_output_tokens: int, model_type: str, context_size: str
-):
+def calculate_cost(num_input_tokens: int, num_output_tokens: int, model_type: str):
     """
-    Calculate the cost of processing a request based on model type and context size.
+    Calculate the cost of processing a request based on model type.
 
     Args:
         num_input_tokens (int): Number of input tokens.
         num_output_tokens (int): Number of output tokens.
         model_type (str): The type of GPT model used.
-        context_size (str): Context size (e.g., 8K, 32K, 4K, 16K).
 
     Returns:
         The cost of processing the request, in USD.
     """
     # Latest pricing info from OpenAI (https://openai.com/pricing), as of Oct 3 2023.
-    PRICING_PER_1000 = {
-        "gpt-4": {
-            "8K": {"input": 0.03, "output": 0.06},
-            "32K": {"input": 0.06, "output": 0.12},
-        },
-        "gpt-3.5-turbo": {
-            "4K": {"input": 0.0015, "output": 0.002},
-            "16K": {"input": 0.003, "output": 0.004},
-        },
-    }
+    PRICING_PER_1000 = [
+        ("gpt-3.5-turbo-16k", {"input": 0.003, "output": 0.004}),
+        ("gpt-3.5-turbo", {"input": 0.0015, "output": 0.002}),
+        ("gpt-4-32k", {"input": 0.06, "output": 0.12}),
+        ("gpt-4", {"input": 0.03, "output": 0.06}),
+    ]
 
-    # Ensure model_type and context_size are valid.
-    if (
-        model_type not in PRICING_PER_1000
-        or context_size not in PRICING_PER_1000[model_type]
-    ):
-        raise ValueError(
-            f"Invalid model_type or context_size. Choose from {', '.join(PRICING_PER_1000.keys())} and respective context sizes."
-        )
+    for model, pricing in PRICING_PER_1000:
+        if model_type.startswith(model):
+            # Calculate total cost per token and total tokens.
+            input_cost_per_token = pricing["input"] / 1000
+            output_cost_per_token = pricing["output"] / 1000
+            total_tokens = num_input_tokens + num_output_tokens
 
-    # Calculate total cost per token and total tokens.
-    input_cost_per_token = PRICING_PER_1000[model_type][context_size]["input"] / 1000
-    output_cost_per_token = PRICING_PER_1000[model_type][context_size]["output"] / 1000
-    total_tokens = num_input_tokens + num_output_tokens
+            # Calculate cost for input and output separately.
+            input_cost = num_input_tokens * input_cost_per_token
+            output_cost = num_output_tokens * output_cost_per_token
 
-    # Calculate cost for input and output separately.
-    input_cost = num_input_tokens * input_cost_per_token
-    output_cost = num_output_tokens * output_cost_per_token
+            return input_cost + output_cost
 
-    return input_cost + output_cost
+    raise ValueError(
+        f"Invalid model_type. Choose from {', '.join([m for m, _ in PRICING_PER_1000])}."
+    )
 
 
 def word_wrap_except_code_blocks(text: str) -> str:
