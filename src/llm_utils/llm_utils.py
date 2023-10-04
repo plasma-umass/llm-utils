@@ -104,3 +104,41 @@ def word_wrap_except_code_blocks(text: str) -> str:
     # Join all paragraphs into a single string.
     wrapped_text = "\n\n".join(wrapped_paragraphs)
     return wrapped_text
+
+
+def read_lines(file_path: str, start_line: int, end_line: int) -> tuple[str, int]:
+    """
+    Read lines from a file.
+
+    Args:
+        file_path (str): The path of the file to read.
+        start_line (int): The line number of the first line to include (1-indexed). Will be bounded below by 1.
+        end_line (int): The line number of the last line to include (1-indexed). Will be bounded above by file's line count.
+
+    Returns:
+        The lines read as an array and the number of the first line included.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+    """
+    # Prevent pathological case where lines are REALLY long.
+    max_chars_per_line = 128
+
+    def truncate(s, l):
+        """
+        Truncate the string to at most the given length, adding ellipses if truncated.
+        """
+        if len(s) < l:
+            return s
+        else:
+            return s[:l] + "..."
+
+    with open(file_path, "r") as f:
+        lines = f.readlines()
+        lines = [truncate(line.rstrip(), max_chars_per_line) for line in lines]
+
+    # Ensure indices are in range.
+    start_line = max(1, start_line)
+    end_line = min(len(lines), end_line)
+
+    return (lines[start_line - 1 : end_line], start_line)
