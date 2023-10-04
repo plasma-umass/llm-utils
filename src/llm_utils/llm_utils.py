@@ -1,7 +1,7 @@
 import tiktoken
 
 # OpenAI specific.
-def count_tokens(string: str, model: str) -> int:
+def count_tokens(model: str, string: str) -> int:
     """Returns the number of tokens in a text string."""
     encoding = tiktoken.encoding_for_model(model)
     num_tokens = len(encoding.encode(string))
