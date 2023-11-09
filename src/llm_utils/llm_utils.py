@@ -38,7 +38,6 @@ def calculate_cost(num_input_tokens: int, num_output_tokens: int, model_type: st
             # Calculate total cost per token and total tokens.
             input_cost_per_token = pricing["input"] / 1000
             output_cost_per_token = pricing["output"] / 1000
-            total_tokens = num_input_tokens + num_output_tokens
 
             # Calculate cost for input and output separately.
             input_cost = num_input_tokens * input_cost_per_token
