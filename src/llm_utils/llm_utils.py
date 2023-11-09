@@ -1,6 +1,6 @@
 import textwrap
-
 import tiktoken
+
 
 # OpenAI specific.
 def count_tokens(model: str, string: str) -> int:
@@ -23,10 +23,12 @@ def calculate_cost(num_input_tokens: int, num_output_tokens: int, model_type: st
     Returns:
         The cost of processing the request, in USD.
     """
-    # Latest pricing info from OpenAI (https://openai.com/pricing), as of Oct 3 2023.
+    # Latest pricing info from OpenAI (https://openai.com/pricing), as of November 9, 2023.
     PRICING_PER_1000 = [
+        ("gpt-3.5-turbo-1106", {"input": 0.001, "output": 0.002}),
         ("gpt-3.5-turbo-16k", {"input": 0.003, "output": 0.004}),
         ("gpt-3.5-turbo", {"input": 0.0015, "output": 0.002}),
+        ("gpt-4-1106-preview", {"input": 0.01, "output": 0.03}),
         ("gpt-4-32k", {"input": 0.06, "output": 0.12}),
         ("gpt-4", {"input": 0.03, "output": 0.06}),
     ]
