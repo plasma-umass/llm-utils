@@ -1,6 +1,6 @@
 import unittest
 
-from llm_utils import llm_utils
+import llm_utils
 
 class TestStringMethods(unittest.TestCase):
     def test_calculate_cost(self):
