@@ -11,7 +11,7 @@ def count_tokens(model: str, string: str) -> int:
 
 
 # OpenAI specific.
-def calculate_cost(num_input_tokens: int, num_output_tokens: int, model_type: str):
+def calculate_cost(num_input_tokens: int, num_output_tokens: int, model_type: str) -> float:
     """
     Calculate the cost of processing a request based on model type.
 
