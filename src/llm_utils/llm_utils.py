@@ -1,4 +1,5 @@
 import textwrap
+
 import tiktoken
 
 
@@ -11,7 +12,9 @@ def count_tokens(model: str, string: str) -> int:
 
 
 # OpenAI specific.
-def calculate_cost(num_input_tokens: int, num_output_tokens: int, model_type: str) -> float:
+def calculate_cost(
+    num_input_tokens: int, num_output_tokens: int, model_type: str
+) -> float:
     """
     Calculate the cost of processing a request based on model type.
 
@@ -26,17 +29,17 @@ def calculate_cost(num_input_tokens: int, num_output_tokens: int, model_type: st
     # Latest pricing info from OpenAI (https://openai.com/pricing and
     # https://platform.openai.com/docs/deprecations/), as of November 9, 2023.
     PRICING_PER_1000 = {
-        "gpt-3.5-turbo-1106":       {"input": 0.001,  "output": 0.002},
-        "gpt-3.5-turbo":            {"input": 0.0015, "output": 0.002},
-        "gpt-3.5-turbo-0613":       {"input": 0.0015, "output": 0.002},
-        "gpt-3.5-turbo-0301":       {"input": 0.0015, "output": 0.002},
-        "gpt-3.5-turbo-16k":        {"input": 0.003,  "output": 0.004},
-        "gpt-3.5-turbo-16k-0613":   {"input": 0.003,  "output": 0.004},
-        "gpt-4-1106-preview":       {"input": 0.01,   "output": 0.03},
-        "gpt-4":                    {"input": 0.03,   "output": 0.06},
-        "gpt-4-0314":               {"input": 0.03,   "output": 0.06},
-        "gpt-4-32k":                {"input": 0.06,   "output": 0.12},
-        "gpt-4-32k-0314":           {"input": 0.06,   "output": 0.12},
+        "gpt-3.5-turbo-1106": {"input": 0.001, "output": 0.002},
+        "gpt-3.5-turbo": {"input": 0.0015, "output": 0.002},
+        "gpt-3.5-turbo-0613": {"input": 0.0015, "output": 0.002},
+        "gpt-3.5-turbo-0301": {"input": 0.0015, "output": 0.002},
+        "gpt-3.5-turbo-16k": {"input": 0.003, "output": 0.004},
+        "gpt-3.5-turbo-16k-0613": {"input": 0.003, "output": 0.004},
+        "gpt-4-1106-preview": {"input": 0.01, "output": 0.03},
+        "gpt-4": {"input": 0.03, "output": 0.06},
+        "gpt-4-0314": {"input": 0.03, "output": 0.06},
+        "gpt-4-32k": {"input": 0.06, "output": 0.12},
+        "gpt-4-32k-0314": {"input": 0.06, "output": 0.12},
     }
 
     if not (price_per_1000 := PRICING_PER_1000.get(model_type)):
@@ -44,12 +47,13 @@ def calculate_cost(num_input_tokens: int, num_output_tokens: int, model_type: st
             f'Unknown model "{model_type}". Choose from: {", ".join(m for m in PRICING_PER_1000)}.'
         )
 
-    return num_input_tokens / 1000 * price_per_1000['input'] + \
-           num_output_tokens / 1000 * price_per_1000['output']
+    return (
+        num_input_tokens / 1000 * price_per_1000["input"]
+        + num_output_tokens / 1000 * price_per_1000["output"]
+    )
 
 
-
-def word_wrap_except_code_blocks(text: str) -> str:
+def word_wrap_except_code_blocks(text: str, width: int = 80) -> str:
     """
     Wraps text except for code blocks for nice terminal formatting.
 
@@ -58,42 +62,64 @@ def word_wrap_except_code_blocks(text: str) -> str:
     by ` ``` `. Returns the updated text.
 
     Args:
-        text: The text to wrap.
+        text (str): The text to wrap.
+        width (int): The width of the lines to wrap at, passed to `textwrap.fill`.
 
     Returns:
         The wrapped text.
     """
-    # Split text into paragraphs.
-    paragraphs = text.split("\n\n")
-    wrapped_paragraphs = []
-    # Check if currently in a code block.
+    # Find code blocks.
+    blocks = []
+    is_code_block = []
+    block = []
     in_code_block = False
-    # Loop through each paragraph and apply appropriate wrapping.
-    for paragraph in paragraphs:
-        # If this paragraph starts and ends with a code block, add it as is.
-        if paragraph.startswith("```") and paragraph.endswith("```"):
-            wrapped_paragraphs.append(paragraph)
-            continue
-        # If this is the beginning of a code block add it as is.
-        if paragraph.startswith("```"):
-            in_code_block = True
-            wrapped_paragraphs.append(paragraph)
-            continue
-        # If this is the end of a code block stop skipping text.
-        if paragraph.endswith("```"):
-            in_code_block = False
-            wrapped_paragraphs.append(paragraph)
-            continue
-        # If we are currently in a code block add the paragraph as is.
-        if in_code_block:
-            wrapped_paragraphs.append(paragraph)
+    for line in text.split("\n"):
+        if line.startswith("```"):
+            if in_code_block:
+                block.append(line)
+                blocks.append(block)
+                block = []
+            else:
+                blocks.append(block)
+                block = [line]
+            is_code_block.append(in_code_block)
+            in_code_block = not in_code_block
         else:
-            # Otherwise, apply text wrapping to the paragraph.
-            wrapped_paragraph = textwrap.fill(paragraph)
-            wrapped_paragraphs.append(wrapped_paragraph)
-    # Join all paragraphs into a single string.
-    wrapped_text = "\n\n".join(wrapped_paragraphs)
-    return wrapped_text
+            block.append(line)
+    blocks.append(block)
+    is_code_block.append(in_code_block)
+
+    # Split text (non-code) paragraphs.
+    copied_blocks = []
+    copied_is_code_block = []
+    for i in range(len(blocks)):
+        if is_code_block[i]:
+            copied_blocks.append(blocks[i])
+            copied_is_code_block.append(True)
+        else:
+            block = []
+            for line in blocks[i]:
+                if not line:
+                    if block:
+                        copied_blocks.append(block)
+                        copied_is_code_block.append(False)
+                        block = []
+                else:
+                    block.append(line)
+            if block:
+                copied_blocks.append(block)
+                copied_is_code_block.append(False)
+                block = []
+    blocks = copied_blocks
+    is_code_block = copied_is_code_block
+
+    # Word wrap text blocks.
+    for i in range(len(blocks)):
+        if not is_code_block[i]:
+            blocks[i] = [textwrap.fill(l, width) for l in blocks[i]]
+
+    # Join lines with a single newline, blocks with two newlines.
+    return "\n\n".join(["\n".join(b) for b in blocks])
 
 
 def read_lines(file_path: str, start_line: int, end_line: int) -> tuple[str, int]:
