@@ -23,3 +23,6 @@ jobs:
 
       - name: Run tests
         run: python -m pytest
+
+      - name: Pyre
+        run: pip install pyre-check && pyre
