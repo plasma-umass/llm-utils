@@ -13,10 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Update pip and install pytest
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip python3-venv watchman
+
+      - name: Install Python dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install pytest
+          python3 -m pip install pyre-check pytest
 
       - name: Install
         run: python3 -m pip install .
@@ -25,4 +30,4 @@ jobs:
         run: python -m pytest
 
       - name: Pyre
-        run: pip install pyre-check && pyre
+        run: pyre
