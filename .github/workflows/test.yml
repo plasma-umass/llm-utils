@@ -27,7 +27,7 @@ jobs:
         run: python3 -m pip install .
 
       - name: Run tests
-        run: python -m pytest
+        run: python3 -m pytest
 
       # - name: Pyre
       #   run: pyre
