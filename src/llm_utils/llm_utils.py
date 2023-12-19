@@ -122,7 +122,7 @@ def word_wrap_except_code_blocks(text: str, width: int = 80) -> str:
     return "\n\n".join(["\n".join(b) for b in blocks])
 
 
-def read_lines(file_path: str, start_line: int, end_line: int) -> tuple[str, int]:
+def read_lines(file_path: str, start_line: int, end_line: int) -> tuple[list[str], int]:
     """
     Read lines from a file.
 
