@@ -29,5 +29,5 @@ jobs:
       - name: Run tests
         run: python3 -m pytest
 
-      - name: Run MyPy
+      - name: Run mypy
         run: mypy .
