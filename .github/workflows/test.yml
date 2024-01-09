@@ -16,12 +16,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3 python3-pip python3-venv watchman
+          sudo apt install -y python3 python3-pip
 
       - name: Install Python dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install pyre-check pytest
+          python3 -m pip install mypy pytest
 
       - name: Install
         run: python3 -m pip install .
@@ -29,5 +29,5 @@ jobs:
       - name: Run tests
         run: python3 -m pytest
 
-      # - name: Pyre
-      #   run: pyre
+      - name: Run MyPy
+        run: mypy .
