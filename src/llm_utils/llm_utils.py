@@ -140,7 +140,7 @@ def read_lines(file_path: str, start_line: int, end_line: int) -> tuple[list[str
     # Prevent pathological case where lines are REALLY long.
     max_chars_per_line = 128
 
-    def truncate(s, l):
+    def truncate(s: str, l: int) -> str:
         """
         Truncate the string to at most the given length, adding ellipses if truncated.
         """
