@@ -32,4 +32,4 @@ jobs:
       - name: Run mypy
         run: |
           python3 -m mypy --strict src
-          python3 -m mypy test
+          python3 -m mypy tests
