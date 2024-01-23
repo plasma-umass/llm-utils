@@ -158,3 +158,33 @@ def read_lines(file_path: str, start_line: int, end_line: int) -> tuple[list[str
     end_line = min(len(lines), end_line)
 
     return (lines[start_line - 1 : end_line], start_line)
+
+
+def number_group_of_lines(group: list[str], first: int, strip: bool = True) -> str:
+    """
+    Add line numbers for each line in the input list.
+
+    Args:
+        group (list[str]): The lines to number.
+        first (int): The number for the first line.
+        strip (bool): Whether to strip leading and trailing blank lines.
+
+    Returns:
+        A string concatenation of the numbered lines.
+    """
+    if strip:
+        while group and not group[0].strip():
+            group = group[1:]
+            first += 1
+        while group and not group[-1].strip():
+            group = group[:-1]
+
+    last = first + len(group) - 1
+    max_line_number_length = len(str(last))
+    result = "\n".join(
+        [
+            "{0:>{1}} {2}".format(first + i, max_line_number_length, line)
+            for i, line in enumerate(group)
+        ]
+    )
+    return result
