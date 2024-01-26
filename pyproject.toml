@@ -20,8 +20,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/plasma-umass/cwhy"
-"Bug Tracker" = "https://github.com/plasma-umass/cwhy/issues"
+"Homepage" = "https://github.com/plasma-umass/llm-utils"
+"Bug Tracker" = "https://github.com/plasma-umass/llm-utils/issues"
 
 [tool.pytest.ini_options]
 addopts = ["--import-mode=importlib"]
