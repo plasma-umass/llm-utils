@@ -58,7 +58,7 @@ class ChatGPT(ChatAPI[ChatCompletionMessageParam]):
 
     @classmethod
     async def send_message(
-        cls, conversation: List[ChatCompletionMessageParam], n
+        cls, conversation: List[ChatCompletionMessageParam], n: int
     ) -> Optional[List[str]]:
         while True:
             try:
@@ -121,7 +121,7 @@ class Claude(ChatAPI[ClaudeMessageParam]):
     completion_tokens: int = 0
 
     @classmethod
-    def generate_chatlog(cls, conversations):
+    def generate_chatlog(cls, conversations: List[ClaudeMessageParam]) -> str:
         log = ""
         for conv in conversations:
             role = conv.get("role", "")
@@ -132,7 +132,7 @@ class Claude(ChatAPI[ClaudeMessageParam]):
         )  # remove the last newline characters
 
     @classmethod
-    def create_payload(cls, conversation: List[ClaudeMessageParam]) -> Dict:
+    def create_payload(cls, conversation: List[ClaudeMessageParam]) -> Dict[Any, Any]:
         blob = {
             "prompt": cls.generate_chatlog(conversation),
             "max_tokens_to_sample": 2048,
@@ -154,7 +154,7 @@ class Claude(ChatAPI[ClaudeMessageParam]):
 
     @classmethod
     async def send_message(
-        cls, conversation: List[ClaudeMessageParam], n
+        cls, conversation: List[ClaudeMessageParam], n: int
     ) -> Optional[List[str]]:
         # conversation[0]['role'] = 'Human'
         first_msg = conversation.pop(0)[
@@ -188,7 +188,7 @@ class Claude(ChatAPI[ClaudeMessageParam]):
         # return [x for x in parse_chatlog(inference['completion'])[-1]['content']['responses']]
 
     @classmethod
-    def get_inference(cls, payload: Dict[Any, Any]) -> Dict[Any, Any]:
+    def get_inference(cls, payload: Dict[Any, Any]) -> Any:
         # print(f"making an inference request to {model_id}, payload={payload}")
         try:
             ## Initialize the runtime rest API to be called for the endpoint
@@ -232,7 +232,7 @@ class Claude(ChatAPI[ClaudeMessageParam]):
 
 def get_model_from_str(
     model_name: str, llm_malformed_max_retry: int
-) -> Optional[ChatAPI]:
+) -> Optional[ChatGPT | Claude]:
     model_name = model_name.lower()
     match model_name:
         case "openai":
