@@ -25,7 +25,6 @@ from llm_utils.utils import contains_valid_json, extract_code_blocks
 
 log = logging.getLogger("rich")
 
-
 class ChatAPI(abc.ABC, Generic[T]):
     prompt_tokens: int
     completion_tokens: int
@@ -166,7 +165,7 @@ class Claude(ChatAPI[ClaudeMessageParam]):
         payload = cls.create_payload(conversation)
         for _ in range(5):
             inference = cls.get_inference(payload)
-            print("INFERENCE", inference["completion"])
+            log.info(f'Result: {inference["completion"]}')
 
             jsonified_completion = contains_valid_json(inference["completion"])
             if jsonified_completion is not None:
