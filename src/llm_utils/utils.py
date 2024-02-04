@@ -1,7 +1,7 @@
+import re
+import json
 import textwrap
-
 import tiktoken
-
 
 # OpenAI specific.
 def count_tokens(model: str, string: str) -> int:
@@ -188,3 +188,29 @@ def number_group_of_lines(group: list[str], first: int, strip: bool = True) -> s
         ]
     )
     return result
+
+def contains_valid_json(my_string):
+    """
+    Parses JSON if valid, replacing any triple quotes with single quotes.
+    Returns the parsed JSON blob if successful, None if not.
+    """
+    
+    # Find start and end position of possible JSON string
+    start_pos = my_string.find('{')
+    end_pos = my_string.rfind('}') + 1
+
+    # There is no JSON object if start or end position is -1
+    if start_pos == -1 or end_pos == 0:
+        return None
+
+    json_string = my_string[start_pos:end_pos]
+    pattern = r'"""(.*?)"""'
+    processed_string = re.sub(pattern, lambda m: json.dumps(m.group(1)), json_string, flags=re.DOTALL)
+    # processed_string = json_string.sub(r'"""', r'\"\"\"')
+    try:
+        return json.loads(processed_string, strict=False)
+    except json.JSONDecodeError as e:
+        # print(e)
+        # print("IN DECODING\n")
+        # print(processed_string)
+        return None
