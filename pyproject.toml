@@ -7,7 +7,7 @@ name = "llm-utils"
 version = "0.2.4"
 authors = [
   { name="Nicolas van Kempen", email="nvankemp@gmail.com" },
-  { name="Emery Berger", email="emery.berger@gmail.com" }
+  { name="Emery Berger", email="emery.berger@gmail.com" },
   { name="Sam Stern", email="sternj@umass.edu" }
 ]
 dependencies = ["tiktoken>=0.5.1", "openai>=1.11.0", "boto>=2.49.0"]
