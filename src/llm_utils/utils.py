@@ -214,3 +214,19 @@ def contains_valid_json(my_string):
         # print("IN DECODING\n")
         # print(processed_string)
         return None
+
+def extract_code_blocks(text):
+    pattern = r'```(python)?(.*?)```'
+    blocks = re.findall(pattern, text, re.DOTALL)
+    return [block[1].strip() for block in blocks]
+
+def parse_chatlog(log):
+    entries = log.split("\n\n")  # split entries by empty lines
+    result = []
+    for entry in entries:
+        if not entry.strip():  # ignore empty entries
+            continue
+        role, *content = entry.split(": ", 1)
+        content = content[0] if content else ""
+        result.append({"role": role, "content": content})
+    return result
