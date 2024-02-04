@@ -2,6 +2,7 @@ import re
 import json
 import textwrap
 import tiktoken
+from typing import Any, Dict, List, Optional
 
 # OpenAI specific.
 def count_tokens(model: str, string: str) -> int:
@@ -189,7 +190,7 @@ def number_group_of_lines(group: list[str], first: int, strip: bool = True) -> s
     )
     return result
 
-def contains_valid_json(my_string):
+def contains_valid_json(my_string: str) -> Any:
     """
     Parses JSON if valid, replacing any triple quotes with single quotes.
     Returns the parsed JSON blob if successful, None if not.
@@ -215,18 +216,18 @@ def contains_valid_json(my_string):
         # print(processed_string)
         return None
 
-def extract_code_blocks(text):
+def extract_code_blocks(text: str) -> List[str]:
     pattern = r'```(python)?(.*?)```'
     blocks = re.findall(pattern, text, re.DOTALL)
     return [block[1].strip() for block in blocks]
 
-def parse_chatlog(log):
+def parse_chatlog(log: str) -> List[Dict[str, str]] :
     entries = log.split("\n\n")  # split entries by empty lines
     result = []
     for entry in entries:
         if not entry.strip():  # ignore empty entries
             continue
         role, *content = entry.split(": ", 1)
-        content = content[0] if content else ""
-        result.append({"role": role, "content": content})
+        content_str = content[0] if content else ""
+        result.append({"role": role, "content": content_str})
     return result
