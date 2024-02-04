@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod, abstractclassmethod, abstractproperty
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import openai
 import logging
 from time import sleep
@@ -28,7 +28,7 @@ class ChatAPI(ABC):
         ...
 
     @abstractclassmethod
-    async def send_message(cls, conversation, n) -> List[str]:
+    async def send_message(cls, conversation: List[str], n: int) -> List[str]:
         ...
 
 
@@ -45,12 +45,16 @@ class ChatGPT(ChatAPI):
         return {"role": "user", "content": msg}
 
     @classmethod
-    async def send_message(cls, conversation: List[Dict[str, str]], n) -> List[str]:
+    async def send_message(cls, conversation: List[Any], n) -> List[str]:
         while True:
             try:
-                response = await openai.ChatCompletion.acreate(
+                client = openai.OpenAI(timeout=30)
+                response = client.chat.completions.create(
                     model=cls.MODEL, messages=conversation, n=n
                 )
+                #response = await openai.ChatCompletion.acreate(
+                #    model=cls.MODEL, messages=conversation, n=n
+                #)
                 break
             except openai.error.RateLimitError:  # type: ignore
                 log.warn("rate limit!")
@@ -131,7 +135,7 @@ class Claude(ChatAPI):
         return None
         # return [x for x in parse_chatlog(inference['completion'])[-1]['content']['responses']]
     @classmethod
-    def get_inference(cls, payload: Dict) -> Dict:
+    def get_inference(cls, payload: Dict[Any, Any]) -> Dict[Any, Any]:
         # print(f"making an inference request to {model_id}, payload={payload}")
         try:
             ## Initialize the runtime rest API to be called for the endpoint
@@ -169,7 +173,7 @@ class Claude(ChatAPI):
             print(f"Exception occurred: {e}")
             raise
 
-def get_model_from_str(model_name, llm_malformed_max_retry) -> Optional[ChatAPI]:
+def get_model_from_str(model_name: str, llm_malformed_max_retry: int) -> Optional[ChatAPI]:
     model_name = model_name.lower()
     match model_name:
         case 'openai':
