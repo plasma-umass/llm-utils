@@ -101,21 +101,48 @@ class TestWordWrap(unittest.TestCase):
 class TestNumberGroupOfLines(unittest.TestCase):
     def test_with_strip(self):
         self.assertEqual(llm_utils.number_group_of_lines([], 1, True), "")
-        self.assertEqual(llm_utils.number_group_of_lines(["A", "B"], 2, True), "2 A\n3 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["A", "B"], 11, True), "11 A\n12 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["A", "B"], 9, True), " 9 A\n10 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["", "A", "B"], 8, True), " 9 A\n10 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["", "A", "B", ""], 8, True), " 9 A\n10 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["A", "B", "", "", "", ""], 9, True), " 9 A\n10 B")
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["A", "B"], 2, True), "2 A\n3 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["A", "B"], 11, True), "11 A\n12 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["A", "B"], 9, True), " 9 A\n10 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["", "A", "B"], 8, True), " 9 A\n10 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["", "A", "B", ""], 8, True), " 9 A\n10 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["A", "B", "", "", "", ""], 9, True),
+            " 9 A\n10 B",
+        )
 
     def test_without_strip(self):
         self.assertEqual(llm_utils.number_group_of_lines([], 1, False), "")
-        self.assertEqual(llm_utils.number_group_of_lines(["A", "B"], 2, False), "2 A\n3 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["A", "B"], 11, False), "11 A\n12 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["A", "B"], 9, False), " 9 A\n10 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["", "A", "B"], 8, False), " 8 \n 9 A\n10 B")
-        self.assertEqual(llm_utils.number_group_of_lines(["", "A", "B", ""], 8, False), " 8 \n 9 A\n10 B\n11 ")
-        self.assertEqual(llm_utils.number_group_of_lines(["A", "B", "", "", "", ""], 9, False), " 9 A\n10 B\n11 \n12 \n13 \n14 ")
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["A", "B"], 2, False), "2 A\n3 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["A", "B"], 11, False), "11 A\n12 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["A", "B"], 9, False), " 9 A\n10 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["", "A", "B"], 8, False), " 8 \n 9 A\n10 B"
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["", "A", "B", ""], 8, False),
+            " 8 \n 9 A\n10 B\n11 ",
+        )
+        self.assertEqual(
+            llm_utils.number_group_of_lines(["A", "B", "", "", "", ""], 9, False),
+            " 9 A\n10 B\n11 \n12 \n13 \n14 ",
+        )
 
 
 if __name__ == "__main__":

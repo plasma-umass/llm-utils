@@ -217,7 +217,7 @@ class Claude(ChatAPI[ClaudeMessageParam]):
 
             # Send the HTTP POST request to the prepared URL with the specified headers & JSON-formatted request body, storing the response
             response = requests.post(
-                prepped.url, headers=prepped.headers, data=request_body
+                prepped.url, headers=prepped.headers, data=request_body  # type:ignore
             )
 
             if response.status_code == 200:
