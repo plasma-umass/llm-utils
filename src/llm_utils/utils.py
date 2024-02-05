@@ -1,7 +1,7 @@
 import re
 import json
 import textwrap
-from typing import Any
+from typing import Any, Dict, List, Tuple
 
 import tiktoken
 
@@ -134,7 +134,7 @@ def word_wrap_except_code_blocks(text: str, width: int = 80) -> str:
     return "\n\n".join(["\n".join(b) for b in blocks])
 
 
-def read_lines(file_path: str, start_line: int, end_line: int) -> tuple[list[str], int]:
+def read_lines(file_path: str, start_line: int, end_line: int) -> Tuple[List[str], int]:
     """
     Read lines from a file.
 
@@ -172,12 +172,12 @@ def read_lines(file_path: str, start_line: int, end_line: int) -> tuple[list[str
     return (lines[start_line - 1 : end_line], start_line)
 
 
-def number_group_of_lines(group: list[str], first: int, strip: bool = True) -> str:
+def number_group_of_lines(group: List[str], first: int, strip: bool = True) -> str:
     """
     Add line numbers for each line in the input list.
 
     Args:
-        group (list[str]): The lines to number.
+        group (List[str]): The lines to number.
         first (int): The number for the first line.
         strip (bool): Whether to strip leading and trailing blank lines.
 
@@ -231,13 +231,13 @@ def contains_valid_json(my_string: str) -> Any:
         return None
 
 
-def extract_code_blocks(text: str) -> list[str]:
+def extract_code_blocks(text: str) -> List[str]:
     pattern = r"```(python)?(.*?)```"
     blocks = re.findall(pattern, text, re.DOTALL)
     return [block[1].strip() for block in blocks]
 
 
-def parse_chatlog(log: str) -> list[dict[str, str]]:
+def parse_chatlog(log: str) -> List[Dict[str, str]]:
     entries = log.split("\n\n")  # split entries by empty lines
     result = []
     for entry in entries:
