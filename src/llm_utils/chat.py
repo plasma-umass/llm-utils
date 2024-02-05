@@ -17,8 +17,7 @@ from openai.types.chat import (
     ChatCompletionSystemMessageParam,
     ChatCompletionUserMessageParam,
 )
-import requests as req
-import re
+import requests
 
 T = TypeVar("T")
 from llm_utils.utils import contains_valid_json, extract_code_blocks
@@ -217,7 +216,9 @@ class Claude(ChatAPI[ClaudeMessageParam]):
             prepped = request.prepare()
 
             # Send the HTTP POST request to the prepared URL with the specified headers & JSON-formatted request body, storing the response
-            response = req.post(prepped.url, headers=prepped.headers, data=request_body)
+            response = requests.post(
+                prepped.url, headers=prepped.headers, data=request_body
+            )
 
             if response.status_code == 200:
                 return response.json()
