@@ -7,9 +7,17 @@ from typing import Any, Dict, List, Optional
 # OpenAI specific.
 def count_tokens(model: str, string: str) -> int:
     """Returns the number of tokens in a text string."""
-    encoding = tiktoken.encoding_for_model(model)
-    num_tokens = len(encoding.encode(string))
-    return num_tokens
+    def extract_after_slash(s: str) -> str:
+      # Split the string by '/' and return the part after it if '/' is found, else return the whole string
+      parts = s.split('/', 1) # The '1' ensures we split at the first '/' only
+      return parts[1] if len(parts) > 1 else s
+
+    try:
+        encoding = tiktoken.encoding_for_model(extract_after_slash(model))
+        num_tokens = len(encoding.encode(string))
+        return num_tokens
+    except KeyError:
+        return 0
 
 
 # OpenAI specific.

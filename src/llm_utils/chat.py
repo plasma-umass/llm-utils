@@ -24,7 +24,7 @@ T = TypeVar("T")
 from llm_utils.utils import contains_valid_json, extract_code_blocks
 
 log = logging.getLogger("rich")
-
+logging.basicConfig(filename='llm_utils.log', encoding='utf-8', level=logging.DEBUG)
 
 class ChatAPI(abc.ABC, Generic[T]):
     prompt_tokens: int
@@ -117,8 +117,8 @@ class Claude(ChatAPI[ClaudeMessageParam]):
     MODEL_ID: str = "anthropic.claude-v2"
     SERVICE_NAME: str = "bedrock"
     MAX_RETRY: int = 5
-    prompt_tokens: int = 0
-    completion_tokens: int = 0
+    prompt_tokens: int = 0      # FIXME not yet implemented
+    completion_tokens: int = 0  # ibid
 
     @classmethod
     def generate_chatlog(cls, conversations: List[ClaudeMessageParam]) -> str:
@@ -164,9 +164,9 @@ class Claude(ChatAPI[ClaudeMessageParam]):
             first_msg.rstrip() + "\n" + conversation[0]["content"]
         )
         payload = cls.create_payload(conversation)
-        for _ in range(5):
+        for _ in range(cls.MAX_RETRY):
             inference = cls.get_inference(payload)
-            print("INFERENCE", inference["completion"])
+            log.info(f'Result: {inference["completion"]}')
 
             jsonified_completion = contains_valid_json(inference["completion"])
             if jsonified_completion is not None:
