@@ -4,13 +4,15 @@ import textwrap
 import tiktoken
 from typing import Any, Dict, List, Optional
 
+
 # OpenAI specific.
 def count_tokens(model: str, string: str) -> int:
     """Returns the number of tokens in a text string."""
+
     def extract_after_slash(s: str) -> str:
-      # Split the string by '/' and return the part after it if '/' is found, else return the whole string
-      parts = s.split('/', 1) # The '1' ensures we split at the first '/' only
-      return parts[1] if len(parts) > 1 else s
+        # Split the string by '/' and return the part after it if '/' is found, else return the whole string
+        parts = s.split("/", 1)  # The '1' ensures we split at the first '/' only
+        return parts[1] if len(parts) > 1 else s
 
     try:
         encoding = tiktoken.encoding_for_model(extract_after_slash(model))
@@ -198,15 +200,16 @@ def number_group_of_lines(group: list[str], first: int, strip: bool = True) -> s
     )
     return result
 
+
 def contains_valid_json(my_string: str) -> Any:
     """
     Parses JSON if valid, replacing any triple quotes with single quotes.
     Returns the parsed JSON blob if successful, None if not.
     """
-    
+
     # Find start and end position of possible JSON string
-    start_pos = my_string.find('{')
-    end_pos = my_string.rfind('}') + 1
+    start_pos = my_string.find("{")
+    end_pos = my_string.rfind("}") + 1
 
     # There is no JSON object if start or end position is -1
     if start_pos == -1 or end_pos == 0:
@@ -214,7 +217,9 @@ def contains_valid_json(my_string: str) -> Any:
 
     json_string = my_string[start_pos:end_pos]
     pattern = r'"""(.*?)"""'
-    processed_string = re.sub(pattern, lambda m: json.dumps(m.group(1)), json_string, flags=re.DOTALL)
+    processed_string = re.sub(
+        pattern, lambda m: json.dumps(m.group(1)), json_string, flags=re.DOTALL
+    )
     # processed_string = json_string.sub(r'"""', r'\"\"\"')
     try:
         return json.loads(processed_string, strict=False)
@@ -224,12 +229,14 @@ def contains_valid_json(my_string: str) -> Any:
         # print(processed_string)
         return None
 
+
 def extract_code_blocks(text: str) -> List[str]:
-    pattern = r'```(python)?(.*?)```'
+    pattern = r"```(python)?(.*?)```"
     blocks = re.findall(pattern, text, re.DOTALL)
     return [block[1].strip() for block in blocks]
 
-def parse_chatlog(log: str) -> List[Dict[str, str]] :
+
+def parse_chatlog(log: str) -> List[Dict[str, str]]:
     entries = log.split("\n\n")  # split entries by empty lines
     result = []
     for entry in entries:
