@@ -1,8 +1,9 @@
 import re
 import json
 import textwrap
+from typing import Any
+
 import tiktoken
-from typing import Any, Dict, List, Optional
 
 
 # OpenAI specific.
@@ -230,13 +231,13 @@ def contains_valid_json(my_string: str) -> Any:
         return None
 
 
-def extract_code_blocks(text: str) -> List[str]:
+def extract_code_blocks(text: str) -> list[str]:
     pattern = r"```(python)?(.*?)```"
     blocks = re.findall(pattern, text, re.DOTALL)
     return [block[1].strip() for block in blocks]
 
 
-def parse_chatlog(log: str) -> List[Dict[str, str]]:
+def parse_chatlog(log: str) -> list[dict[str, str]]:
     entries = log.split("\n\n")  # split entries by empty lines
     result = []
     for entry in entries:
