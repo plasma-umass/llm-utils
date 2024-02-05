@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llm-utils"
-version = "0.2.6"
+version = "0.2.7"
 authors = [
   { name="Nicolas van Kempen", email="nvankemp@gmail.com" },
   { name="Emery Berger", email="emery.berger@gmail.com" },
