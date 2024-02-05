@@ -23,8 +23,8 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install mypy pytest
 
-      - name: Install
-        run: python3 -m pip install .
+      - name: Install in development mode
+        run: python3 -m pip install .[dev]
 
       - name: Run tests
         run: python3 -m pytest
