@@ -10,7 +10,7 @@ authors = [
   { name="Emery Berger", email="emery.berger@gmail.com" },
   { name="Sam Stern", email="sternj@umass.edu" }
 ]
-dependencies = ["tiktoken>=0.5.1", "openai>=1.11.0", "botocore>=1.34.34", "botocore-types>=0.2.2", "types-requests>=2.31.0.20240125"]
+dependencies = ["tiktoken>=0.5.2", "openai>=1.11.0", "botocore>=1.34.34", "botocore-types>=0.2.2", "types-requests>=2.31.0.20240125"]
 description = "Utilities for our LLM projects (CWhy, ChatDBG, ...)."
 readme = "README.md"
 requires-python = ">=3.9"
