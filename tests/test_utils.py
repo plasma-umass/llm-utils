@@ -6,7 +6,7 @@ import llm_utils
 class TestCalculateCost(unittest.TestCase):
     def test_calculate_cost(self):
         self.assertAlmostEqual(
-            llm_utils.calculate_cost(1000, 2000, "gpt-3.5-turbo"), 0.0055
+            llm_utils.calculate_cost(1000, 2000, "gpt-3.5-turbo"), 0.0035
         )
         self.assertAlmostEqual(
             llm_utils.calculate_cost(1000, 2000, "gpt-3.5-turbo-16k"), 0.011
