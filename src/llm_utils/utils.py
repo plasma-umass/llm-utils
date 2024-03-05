@@ -40,7 +40,7 @@ def calculate_cost(
     """
     # Latest pricing info from OpenAI (https://openai.com/pricing and
     # https://platform.openai.com/docs/deprecations/), as of March 5, 2024.
-    PRICING_PER_MILLION = {
+    PRICING_PER_MILLION: Dict[str, Dict[str, float]] = {
         # gpt-4-turbo.
         "gpt-4-0125-preview": {"input": 10, "output": 30},
         "gpt-4-turbo-preview": {"input": 10, "output": 30},
