@@ -39,29 +39,37 @@ def calculate_cost(
         The cost of processing the request, in USD.
     """
     # Latest pricing info from OpenAI (https://openai.com/pricing and
-    # https://platform.openai.com/docs/deprecations/), as of November 9, 2023.
-    PRICING_PER_1000 = {
-        "gpt-3.5-turbo-1106": {"input": 0.001, "output": 0.002},
-        "gpt-3.5-turbo": {"input": 0.0015, "output": 0.002},
-        "gpt-3.5-turbo-0613": {"input": 0.0015, "output": 0.002},
-        "gpt-3.5-turbo-0301": {"input": 0.0015, "output": 0.002},
-        "gpt-3.5-turbo-16k": {"input": 0.003, "output": 0.004},
-        "gpt-3.5-turbo-16k-0613": {"input": 0.003, "output": 0.004},
-        "gpt-4-1106-preview": {"input": 0.01, "output": 0.03},
-        "gpt-4": {"input": 0.03, "output": 0.06},
-        "gpt-4-0314": {"input": 0.03, "output": 0.06},
-        "gpt-4-32k": {"input": 0.06, "output": 0.12},
-        "gpt-4-32k-0314": {"input": 0.06, "output": 0.12},
+    # https://platform.openai.com/docs/deprecations/), as of March 5, 2024.
+    PRICING_PER_MILLION = {
+        # gpt-4-turbo.
+        "gpt-4-0125-preview": {"input": 10, "output": 30},
+        "gpt-4-turbo-preview": {"input": 10, "output": 30},
+        "gpt-4-1106-preview": {"input": 10, "output": 30},
+        "gpt-4-vision-preview": {"input": 10, "output": 30},
+        "gpt-4-1106-vision-preview": {"input": 10, "output": 30},
+        # gpt-4.
+        "gpt-4": {"input": 30, "output": 60},
+        "gpt-4-0613": {"input": 30, "output": 60},
+        "gpt-4-32k": {"input": 60, "output": 120},
+        "gpt-4-32k-0613": {"input": 60, "output": 120},
+        # gpt-3.5-turbo.
+        "gpt-3.5-turbo-0125": {"input": 0.5, "output": 1.5},
+        "gpt-3.5-turbo": {"input": 0.5, "output": 1.5},
+        "gpt-3.5-turbo-1106": {"input": 1, "output": 2},
+        "gpt-3.5-turbo-instruct": {"input": 1.5, "output": 2},
+        "gpt-3.5-turbo-16k": {"input": 3, "output": 4},
+        "gpt-3.5-turbo-0613": {"input": 1.5, "output": 2},
+        "gpt-3.5-turbo-16k-0613": {"input": 3, "output": 4},
     }
 
-    if not (price_per_1000 := PRICING_PER_1000.get(model_type)):
+    if not (price_per_million := PRICING_PER_MILLION.get(model_type)):
         raise ValueError(
-            f'Unknown model "{model_type}". Choose from: {", ".join(m for m in PRICING_PER_1000)}.'
+            f'Unknown model "{model_type}". Choose from: {", ".join(m for m in PRICING_PER_MILLION)}.'
         )
 
     return (
-        num_input_tokens / 1000 * price_per_1000["input"]
-        + num_output_tokens / 1000 * price_per_1000["output"]
+        num_input_tokens / 1_000_000 * price_per_million["input"]
+        + num_output_tokens / 1_000_000 * price_per_million["output"]
     )
 
 
